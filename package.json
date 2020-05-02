@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "build": "./build.sh",
+    "dev": "concurrently \"chokidar \"{client/**/*,public/**/*,package*.json}\" --initial -c \"./build.sh\"\" \"http-server dist\"",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.1",
+    "chokidar-cli": "^2.1.0",
+    "concurrently": "^5.2.0",
+    "http-server": "^0.12.3",
+    "jest": "^25.5.3",
+    "tinyify": "^2.5.2"
+  }
+}

@@ -4,4 +4,6 @@ proof of concept using the [wzrd.in](https://github.com/browserify/wzrd.in) API 
 
 most of this repo is just demo UI, see the `wzrd` function in `client/index.js` and the module caching in `service-worker.js` for how it works.
 
+demo running here: https://wzrd-ecru.now.sh/
+
 ![example](screenshot.png)

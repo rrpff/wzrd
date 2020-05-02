@@ -4,7 +4,7 @@ const output = document.getElementById("output")
 const editor = document.getElementById("editor")
 const dependencies = document.getElementById("dependencies")
 
-const browserify = async code => {
+const wzrd = async code => {
   const dependencies = detective(code)
   const bundles = await Promise.all(dependencies.map(async d => {
     const res = await fetch(`https://wzrd.in/bundle/${d}@latest`)
@@ -65,7 +65,7 @@ const renderOutput = async script => {
 }
 
 const change = async () => {
-  const { bundle, dependencies } = await browserify(editor.value)
+  const { bundle, dependencies } = await wzrd(editor.value)
 
   renderOutput(bundle)
   renderDependencies(dependencies)

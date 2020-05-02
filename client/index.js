@@ -4,6 +4,22 @@ const output = document.getElementById("output")
 const editor = document.getElementById("editor")
 const dependencies = document.getElementById("dependencies")
 
+const browserify = async code => {
+  const dependencies = detective(code)
+  const bundles = await Promise.all(dependencies.map(async d => {
+    const res = await fetch(`https://wzrd.in/bundle/${d}@latest`)
+    return await res.text()
+  }))
+
+  const scripts = [...bundles, code]
+  const bundle = scripts.join("\n;")
+
+  return {
+    bundle,
+    dependencies
+  }
+}
+
 const debounce = (fn, ms) => {
   let timeout
   return (...args) => {
@@ -12,7 +28,7 @@ const debounce = (fn, ms) => {
   }
 }
 
-const html = scripts => {
+const html = script => {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -20,13 +36,13 @@ const html = scripts => {
     <style>html, body { padding: 0; margin: 0; height: 100%; display: block; }</style>
   </head>
   <body>
-    ${scripts.map(script => `<script type="text/javascript">${script}</script>`).join("\n")}
+    <script type="text/javascript">${script}</script>
   </body>
   </html>
   `
 }
 
-const renderDependencies = (deps) => {
+const renderDependencies = deps => {
   dependencies.innerHTML = ""
   deps.forEach(dep => {
     const li = document.createElement("li")
@@ -35,14 +51,7 @@ const renderDependencies = (deps) => {
   })
 }
 
-const execute = async (code, dependencies) => {
-  const bundles = await Promise.all(dependencies.map(async d => {
-    const res = await fetch(`https://wzrd.in/bundle/${d}@latest`)
-    return await res.text()
-  }))
-
-  const scripts = [...bundles, code]
-
+const renderOutput = async script => {
   const iframe = document.createElement("iframe")
   iframe.src = "about:blank"
   iframe.frameBorder = "0"
@@ -51,14 +60,14 @@ const execute = async (code, dependencies) => {
   output.appendChild(iframe)
 
   iframe.contentWindow.document.open()
-  iframe.contentWindow.document.write(html(scripts))
+  iframe.contentWindow.document.write(html(script))
   iframe.contentWindow.document.close()
 }
 
-const change = () => {
-  const dependencies = detective(editor.value)
+const change = async () => {
+  const { bundle, dependencies } = await browserify(editor.value)
 
-  execute(editor.value, dependencies)
+  renderOutput(bundle)
   renderDependencies(dependencies)
 }
 

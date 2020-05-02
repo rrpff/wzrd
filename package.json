@@ -11,5 +11,8 @@
     "http-server": "^0.12.3",
     "jest": "^25.5.3",
     "tinyify": "^2.5.2"
+  },
+  "dependencies": {
+    "detective": "^5.2.0"
   }
 }
